@@ -38,16 +38,16 @@ class Example extends Component {
 
 
   componentDidUpdate(){
-    
     if(this.props.navigation.state.params.resultado != this.state.corridas){
       //this.setState({corridas: this.props.navigation.state.params.resultado})
       const corridax = this.props.navigation.state.params.resultado;
       const trajetox = corridax[0];
-      var latitude = parseFloat(trajetox.latitude);
-      var longitude = parseFloat(trajetox.longitude);
+      var latitude = parseFloat(trajetox.latitude_Empresa);
+      var longitude = parseFloat(trajetox.longitude_Empresa);
+      var nomeFantasia = trajetox.nomeFantasia;
       var nome = trajetox.cliente;
-      var pet = trajetox.pet; 
-      var novoTrajeto = {latitude,longitude,nome,pet}
+      var pet = trajetox.pet;
+      var novoTrajeto = {latitude,longitude,nome,pet, nomeFantasia}
       this.setState({coordinates: [...this.state.guardaposicao, novoTrajeto],corridas: this.props.navigation.state.params.resultado})  
       
     }
@@ -57,55 +57,77 @@ class Example extends Component {
 
 _teste(){
   const pegaid = this.props.navigation.state.params.resultado;
-  console.log("pegaaaa", pegaid)
   const idpega = pegaid[0];
   var id = parseInt(idpega.Id);
-  Alert.alert(
-    "Obâ, você chegou ao seu destino? ",
-    "",
-    [
+
+  if(idpega.id_status_corrida === 6){
+    fetch('http://www.ipet.kinghost.net/api/corridas/EncerraCorrida',{
+    method: "POST",
+    credentials: 'include',
+    headers: {           
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(
       {
-        text: "Não",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
-      },
-      { text: "Sim", onPress: ()=> this.props.navigation.navigate('MapaVolta',{resultado: this.props.navigation.state.params.resultado}) }
-    ],
-    { cancelable: false }
-  );
-
-  // fetch('http://www.ipet.kinghost.net/api/corridas/EncerraCorrida',{
-  //   method: "POST",
-  //   credentials: 'include',
-  //   headers: {           
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify(id)
-  // })
+        "id": id,
+        "id_status_corrida": 2,})
+      })
    
-  //  .then((response) => response.json())
-  //  .then((responseJson) => {
-  //    console.log("responsejson",responseJson)
-  //    Alert.alert(
-  //     "Encerrando corrida",
-  //     "Deseja encerrar essa corrida?",
-  //     [
-  //       {
-  //         text: "Cancelar",
-  //         onPress: () => console.log("Cancel Pressed"),
-  //         style: "cancel"
-  //       },
-  //       { text: "OK", onPress: ()=> this.props.navigation.navigate('MapaVolta',{resultado: this.props.navigation.state.params.resultado}) }
-  //     ],
-  //     { cancelable: false }
-  //   );
+   .then((response) => response.json())
+   .then((responseJson) => {
+     console.log("responsejson sou deste aqui mesmo ;)",responseJson)
+     Alert.alert(
+      "Encerrando corrida",
+      "Deseja encerrar essa corrida?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => this.props.navigation.navigate('Corridas') }
+      ],
+      { cancelable: false }
+    );
 
-  //  }
-  //  )
-  //  .catch((error) => {console.log("erro fetch",error)});
+   }
+   )
+   .catch((error) => {console.log("erro fetch",error)});
 
-  
+  }else{
+      fetch('http://www.ipet.kinghost.net/api/corridas/EncerraCorrida',{
+      method: "POST",
+      credentials: 'include',
+      headers: {           
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {
+          "id": id,
+          "id_status_corrida": 6,})
+        })
+    
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log("responsejson sou deste aqui mesmo 1 pohaaaaa ;)",responseJson)
+      Alert.alert(
+        "Encerrando corrida",
+        "Deseja encerrar essa corrida?",
+        [
+          {
+            text: "Cancelar",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => this.props.navigation.navigate('Corridas') }
+        ],
+        { cancelable: false }
+      );
 
+    }
+    )
+    .catch((error) => {console.log("erro fetch",error)});
+  }
 }
 
    async componentDidMount() {
@@ -132,11 +154,12 @@ _teste(){
         )
         const corridas = this.state.corridas;
         const trajeto = corridas[0];
-        var latitude = parseFloat(trajeto.latitude);
-        var longitude = parseFloat(trajeto.longitude);
+        var latitude = parseFloat(trajeto.latitude_Empresa);
+        var longitude = parseFloat(trajeto.longitude_Empresa);
         var nome = trajeto.cliente;
-        var pet = trajeto.pet; 
-        var teste = {latitude,longitude,nome,pet}
+        var pet = trajeto.pet;
+        var nomeFantasia = trajeto.nomeFantasia; 
+        var teste = {latitude,longitude,nome,pet, nomeFantasia}
         this.setState({coordinates: [...this.state.coordinates, teste]})   
 
 
@@ -203,8 +226,8 @@ _teste(){
             <MapView.Marker key={`coordinate_${index}`}
             coordinate={coordinate} 
             icon={require('../Assets/petpata.png')}
-            title={coordinate.nome}
-            description={coordinate.pet} />
+            title={coordinate.nomeFantasia}
+             />
           )}
           {(this.state.coordinates.length >= 2) && (
             <MapViewDirections

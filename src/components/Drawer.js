@@ -26,6 +26,7 @@ export default class CustomDrawerContentComponent extends Component {
       //console.log(this.state.info)
       const { navigation } = this.props;
       const ripple = TouchableNativeFeedback.Ripple('#adacac', false);     
+      console.log("Testeeee",this.state.info )
           return (
 
             this.state.info ?
@@ -39,7 +40,7 @@ export default class CustomDrawerContentComponent extends Component {
     >
       <View style={[ styles.containHeader, { backgroundColor: '#FFFFFF'}]}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Avatar size='large' rounded icon={{ name: 'user-circle-o', type: 'font-awesome', size: 80,  color: '#836FFF'}} />
+          <Avatar size='large' source={{ uri: this.state.info.foto,  type: 'font-awesome', size: 80,  color: '#836FFF' }} rounded />
           
             <Text style={{ color: '#836FFF', marginTop: '3%', fontFamily: 'sans-serif-condensed' }}>{`Olá ${this.state.info.email},`}</Text>
 

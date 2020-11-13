@@ -19,6 +19,7 @@ import {
 export default function Welcome(props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [foto, setFoto] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   var STORAGE_KEY = 'id_token';
@@ -38,6 +39,15 @@ export default function Welcome(props) {
       }
     }
 
+    async function onValueIDs(item, selectedValue, item2, selectedValue2 ) {
+      try {
+        await AsyncStorage.setItem(item, JSON.stringify(selectedValue));
+        await AsyncStorage.setItem(item2, JSON.stringify(selectedValue2));
+      } catch (error) {
+        console.log('AsyncStorage error: ' + error.message);
+      }
+    }
+
 
   async function signIn() {
     if (username.length === 0) return
@@ -46,23 +56,30 @@ export default function Welcome(props) {
 
     try {
 
-      const credentials = {
-        email: username,
-        password: password
-      }
+      
 
       const credential = {
         email: username,
-        password: password
+        password: password,
+        foto: foto
       }
 
       //const response = await api.post('/api/usuario/login', credentials)
       const response = await api.post('/v1/account/login', credential)
       //console.log("response:",response);
       
-
+      console.log("fotinha ", response.data.user.foto_perfil)
       const user = response.data
+      // console.log("Teste Empresa", response.data.user.id_empresa)
+      // console.log("Teste Pessoa", response.data.user.id)
       await onValueChange('id_token',user.token)
+      await onValueIDs('id_empresa',response.data.user.id_empresa, 'id_pessoa', response.data.user.id)
+      await setFoto(response.data.user.foto_perfil)
+      const credentials = {
+        email: username,
+        password: password, 
+        foto: response.data.user.foto_perfil
+      }
       //await saveUser('id_token',user.token)
       const resetAction = StackActions.reset({
         index: 0,

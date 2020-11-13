@@ -24,7 +24,7 @@ export default class Concluida extends Component {
   UrlConcluida = 'http://www.ipet.kinghost.net/api/corridas/CorridaConcluida';
 
   componentDidMount() {
-      
+      console.log("Estou ")
     fetch(this.UrlConcluida,{
        method: "GET",
        headers: {
@@ -34,6 +34,7 @@ export default class Concluida extends Component {
       
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson)
         this.setState({
           isLoading: false,
           concluida: responseJson,
@@ -60,7 +61,7 @@ export default class Concluida extends Component {
         //title: item.pet[0]
       }}
     bottomDivider
-    rightSubtitle={'R$ 100,00'}
+    // rightSubtitle={'R$ 100,00'}
     //chevron
     
   />

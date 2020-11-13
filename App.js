@@ -1,5 +1,6 @@
 
 import Mapa from './src/Map';
+import MapaVolta from './src/Map/volta';
 import Corridas from './src/Corridas'
 import Login from './src/pages/Welcome/'
 import Registro from './src/pages/Usuario/register'
@@ -44,7 +45,8 @@ const AuthStack = createStackNavigator(
   {
     SignIn: Login,
     App: StackNavigatorContainer,
-    Mapa: Mapa
+    Mapa: Mapa,
+    MapaVolta: MapaVolta,
     // SignUp: RegisterUser
   },
   {
